@@ -68,7 +68,7 @@ select {
 }
 
 /* Ayah-Anzeige */
-#ayah-arabic {
+#ayah-arabic, #previous-ayah, #following-ayah {
     font-size: 1.5em;
     font-weight: bold;
     color: #000;
@@ -96,6 +96,10 @@ button {
 
 button:hover {
     background: #0056b3;
+}
+
+#show-answer-button{
+    display: none;
 }
 
 footer{

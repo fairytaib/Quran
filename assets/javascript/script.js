@@ -1,3 +1,7 @@
+const random_ayah_button = document.getElementById("get-random-ayah-button");
+const show_answer_button = document.getElementById("show-answer-button");
+const surah_dropdown = document.getElementById("surah-dropdown");
+
 const quran_api = "https://quranapi.pages.dev/api/";
 
 function get_surah(){
@@ -92,21 +96,65 @@ function set_random_ayah(values){
     return random    
 }
 
-document.getElementById("surah-dropdown").addEventListener("change", async function () {
+async function get_previous_ayah(surah_number, ayah_number){
+    if (ayah_number > 1) {
+        try {
+            const response = await fetch(quran_api + `${surah_number}/${ayah_number - 1}.json`);
+            const ayah = await response.json();
+            return ayah.arabic1 || "Arabic text not found"; // Ensure the API response has this property
+        } catch (error) {
+            console.error("Error fetching Arabic ayah:", error);
+            return "Error fetching data";
+        }
+    } else {
+        return "";
+    }
+}
+
+async function get_following_ayah(surah_number ,ayah_number){
+    const max_ayah = await get_ayah_amount(surah_number);
+    if (ayah_number < max_ayah) {
+        try {
+            const response = await fetch(quran_api + `${surah_number}/${ayah_number + 1}.json`);
+            const ayah = await response.json();
+            return ayah.arabic1 || "Arabic text not found"; // Ensure the API response has this property
+        } catch (error) {
+            console.error("Error fetching Arabic ayah:", error);
+            return "Error fetching data";
+        }
+    } else {
+        return "";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", populateDropdown);
+
+surah_dropdown.addEventListener("change", async function () {
     const surah_number = get_surah();
     populate_end_ayah(surah_number);
 });
 
-document.addEventListener("DOMContentLoaded", populateDropdown);
-
-document.getElementById("get-random-ayah-button").addEventListener("click", async function () {
+random_ayah_button.addEventListener("click", async function () {
     const surah_number = get_surah();
     const ayah_limit = limit_ayah_search();
     const ayah_number = set_random_ayah(ayah_limit);
-
     const arabic = await get_ayah_arabic(surah_number, ayah_number);
     const english = await get_ayah_english(surah_number, ayah_number);
 
     document.getElementById("ayah-arabic").innerText = arabic;
     document.getElementById("ayah-english").innerText = english;
+    document.getElementById("previous-ayah").innerText = ""
+    document.getElementById("following-ayah").innerText = ""
+
+    show_answer_button.addEventListener("click", async function () {
+        const previous_ayah = get_previous_ayah(surah_number, ayah_number)
+        const following_ayah = get_following_ayah(surah_number, ayah_number)
+        document.getElementById("previous-ayah").innerText = await previous_ayah;
+        document.getElementById("following-ayah").innerText = await following_ayah;
+        document.getElementById("ayah-english").style.display = "none";
+    })
+
+    show_answer_button.style.display = "block";
 });
+
+
