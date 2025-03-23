@@ -6,6 +6,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -95,4 +96,17 @@ button {
 
 button:hover {
     background: #0056b3;
+}
+
+footer{
+    text-align: center;
+}
+
+#more-tools{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    list-style: none;
 }
