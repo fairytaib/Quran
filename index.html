@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Quran</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <main>
+        <h1>Recite the previous and the following Ayah</h1>
+        <div id="settings-container">
+            <label for="surah-dropdown">Choose a Surah:</label>
+            <select id="surah-dropdown">
+                <option value="">Lade Suren...</option>
+            </select>
+            <p>From: <input type="number" id="start-ayah" value="1"> to <input type="number" id="end-ayah" value="286"></p>
+        </div>
+
+        <div id="ayah-container">
+            <p id="ayah-arabic"></p>
+            <p id="ayah-english"></p>
+        </div>
+        <button id="get-random-ayah-button">Get random Ayah</button>
+    </main>
+    <script src="assets/javascript/script.js"></script>
+</body>
+
+</html>
