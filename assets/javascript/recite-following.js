@@ -19,12 +19,6 @@ async function get_all_surahs(surah_number) {
     }
 }
 
-async function populate_end_ayah(surah_number) {
-    const ayah_amount = await get_ayah_amount(surah_number);
-    const field = document.getElementById("end-ayah");
-    field.value = ayah_amount;
-}
-
 async function populateDropdown() {
     const dropdown = document.getElementById("surah-dropdown");
     const surahs = await get_all_surahs();
