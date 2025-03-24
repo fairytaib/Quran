@@ -91,6 +91,23 @@ select {
     direction: rtl; /* Arabischer Text richtig ausrichten */
 }
 
+
+/* Button */
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
 /* Footer */
 footer {
     text-align: center;

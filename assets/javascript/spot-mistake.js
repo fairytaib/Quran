@@ -1,5 +1,8 @@
 const quran_api = "https://quranapi.pages.dev/api/";
 
+const container_one = document.getElementById("container-one");
+const container_two = document.getElementById("container-two");
+
 const container_one_ayah_one = document.getElementById("container-one-ayah-one");
 const container_one_ayah_two = document.getElementById("container-one-ayah-two");
 
@@ -8,8 +11,10 @@ const container_two_ayah_two = document.getElementById("container-two-ayah-two")
 
 const surah_dropdown = document.getElementById("surah-dropdown");
 
-let correct_anwser = []
-let incorrect_anwser = []
+const start_button = document.getElementById("generate-button");
+
+let correct_answer = []
+let incorrect_answer = []
 
 function get_surah(){
     return document.getElementById("surah-dropdown").value;
@@ -59,63 +64,128 @@ async function populateDropdown() {
     });
 }
 
-async function get_correct_ayah(){
+async function get_correct_ayah() {
     const surah = document.getElementById("surah-dropdown").value;
-    const random_ayah = Math.floor(Math.random() * get_ayah_amount(surah)) + 1;
+    const ayahAmount = await get_ayah_amount(surah);
+    let random_ayah = Math.floor(Math.random() * ayahAmount) + 1;
 
-    if (random_ayah < 1){
-        random_ayah += 1
-    } else if (random_ayah > get_ayah_amount(surah)){
+    if (random_ayah > ayahAmount - 1) {
         random_ayah -= 1
     }
 
-    fetch(quran_api + `${surah}/${random_ayah}.json`)
-        .then(response => response.json())
-        .then(data => {
-            correct_anwser.push(data.text);
-        })
-        .catch(error => {
-            console.error("Error fetching ayah:", error);
-        });
+    try {
+        const response1 = await fetch(quran_api + `${surah}/${random_ayah}.json`);
+        const data1 = await response1.json();
+        if (data1 && data1.arabic1) {
+            correct_answer.push(data1.arabic1);
+        } else {
+            console.error("Invalid data for correct ayah:", data1);
+        }
 
-    fetch(quran_api + `${surah}/${random_ayah + 1}.json`)
-        .then(response => response.json())
-        .then(data => {
-            correct_anwser.push(data.text);
-        })
-        .catch(error => {
-            console.error("Error fetching ayah:", error);
-        });
-}
-
-async function get_wrong_ayah(){
-    const surah = document.getElementById("surah-dropdown").value;
-    const random_ayah = Math.floor(Math.random() * get_ayah_amount(surah)) + 1;
-    const random_ayah_two = Math.floor(Math.random() * get_ayah_amount(surah)) + 1;
-
-    if (random_ayah < 1){
-        random_ayah += 1
-    } else if (random_ayah > get_ayah_amount(surah)){
-        random_ayah -= 1
+        if (random_ayah < ayahAmount) {
+            const response2 = await fetch(quran_api + `${surah}/${random_ayah + 1}.json`);
+            const data2 = await response2.json();
+            if (data2 && data2.arabic1) {
+                correct_answer.push(data2.arabic1);
+            } else {
+                console.error("Invalid data for correct ayah (second):", data2);
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching correct ayah:", error);
     }
-
-    fetch(quran_api + `${surah}/${random_ayah}.json`)
-        .then(response => response.json())
-        .then(data => {
-            incorrect_anwser.push(data.text);
-        })
-        .catch(error => {
-            console.error("Error fetching ayah:", error);
-        });
-
-    fetch(quran_api + `${surah}/${random_ayah_two}.json`)
-        .then(response => response.json())
-        .then(data => {
-            incorrect_anwser.push(data.text);
-        })
-        .catch(error => {
-            console.error("Error fetching ayah:", error);
-        });
 }
+
+async function get_wrong_ayah() {
+    const surah = document.getElementById("surah-dropdown").value;
+    const ayahAmount = await get_ayah_amount(surah);
+    const random_ayah = Math.floor(Math.random() * ayahAmount) + 1;
+    let random_ayah_two;
+
+    do {
+        random_ayah_two = Math.floor(Math.random() * ayahAmount) + 1;
+    } while (random_ayah_two === random_ayah);
+
+    try {
+        const response1 = await fetch(quran_api + `${surah}/${random_ayah}.json`);
+        const data1 = await response1.json();
+        if (data1 && data1.arabic1) {
+            incorrect_answer.push(data1.arabic1);
+        } else {
+            console.error("Invalid data for wrong ayah:", data1);
+        }
+
+        const response2 = await fetch(quran_api + `${surah}/${random_ayah_two}.json`);
+        const data2 = await response2.json();
+        if (data2 && data2.arabic1) {
+            incorrect_answer.push(data2.arabic1);
+        } else {
+            console.error("Invalid data for wrong ayah (second):", data2);
+        }
+    } catch (error) {
+        console.error("Error fetching wrong ayah:", error);
+    }
+}
+
+function check_answer(isCorrect, container) {
+    if (isCorrect) {
+        // Wenn die Antwort korrekt ist, färbe den gesamten Container grün
+        container.style.backgroundColor = "green";
+    } else {
+        // Wenn die Antwort falsch ist, färbe den gesamten Container rot
+        container.style.backgroundColor = "red";
+    }
+}
+
+function reset() {
+    // Hintergrundfarben zurücksetzen
+    container_one.style.backgroundColor = "";
+    container_two.style.backgroundColor = "";
+
+    // Klassen zurücksetzen
+    container_one.classList.remove("correct", "incorrect");
+    container_two.classList.remove("correct", "incorrect");
+}
+
+
+function display_text() {
+    const isCorrectInContainerOne = Math.random() < 0.5;
+
+    if (isCorrectInContainerOne) {
+        container_one.classList.add("correct");
+        container_two.classList.add("incorrect");
+        container_one_ayah_one.innerHTML = correct_answer[0];
+        container_one_ayah_two.innerHTML = correct_answer[1];
+        container_two_ayah_one.innerHTML = incorrect_answer[0];
+        container_two_ayah_two.innerHTML = incorrect_answer[1];
+
+        // Füge Event-Listener für Klicks hinzu
+        container_one.onclick = () => check_answer(true, container_one); // Container One ist korrekt
+        container_two.onclick = () => check_answer(false, container_two); // Container Two ist falsch
+    } else {
+        container_one.classList.add("incorrect");
+        container_two.classList.add("correct");
+        container_one_ayah_one.innerHTML = incorrect_answer[0];
+        container_one_ayah_two.innerHTML = incorrect_answer[1];
+        container_two_ayah_one.innerHTML = correct_answer[0];
+        container_two_ayah_two.innerHTML = correct_answer[1];
+
+        // Füge Event-Listener für Klicks hinzu
+        container_one.onclick = () => check_answer(false, container_one); // Container One ist falsch
+        container_two.onclick = () => check_answer(true, container_two); // Container Two ist korrekt
+    }
+}
+
+
 
 document.addEventListener("DOMContentLoaded", populateDropdown);
+
+start_button.addEventListener("click", async function () {
+    correct_answer = []; // Schreibfehler korrigiert
+    incorrect_answer = []; // Schreibfehler korrigiert
+
+    reset();
+    await get_correct_ayah();
+    await get_wrong_ayah();
+    display_text();
+});

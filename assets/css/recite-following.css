@@ -101,16 +101,39 @@ button:hover {
 #show-answer-button{
     display: none;
 }
-
-footer{
+footer {
     text-align: center;
+    margin-top: 20px;
+    padding: 10px;
 }
 
-#more-tools{
+footer h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+/* Mehr-Tools Liste */
+#more-tools {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-
     list-style: none;
+    padding: 0;
+}
+
+#more-tools li {
+    background: #007bff;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+#more-tools li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#more-tools li:hover {
+    background: #0056b3;
 }
