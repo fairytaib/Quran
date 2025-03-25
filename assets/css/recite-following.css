@@ -1,16 +1,4 @@
-/* Grundlegende Stile für die gesamte Seite */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
+
 
 #ayah-container {
     display: flex;
