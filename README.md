@@ -1,1 +1,1 @@
-![Live Version](https://fairytaib.github.io/Quran/)
+[Live Version](https://fairytaib.github.io/Quran/)
