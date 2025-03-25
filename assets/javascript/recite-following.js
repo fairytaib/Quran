@@ -183,25 +183,30 @@ random_ayah_button.addEventListener("click", async function () {
     const arabic = await get_ayah_arabic(surah_number, ayah_number);
     const english = await get_ayah_english(surah_number, ayah_number);
 
+    // Fülle die aktuellen Ayah-Daten
     document.getElementById("ayah-arabic").innerText = arabic;
     document.getElementById("ayah-english").innerText = english;
-    document.getElementById("previous-ayah").innerText = ""
-    document.getElementById("following-ayah").innerText = ""
+    document.getElementById("previous-ayah").innerText = "";
+    document.getElementById("following-ayah").innerText = "";
+    document.getElementById("ayah-english-previous").innerText = "";
+    document.getElementById("ayah-english-following").innerText = "";
 
-    show_answer_button.replaceWith(show_answer_button.cloneNode(true)); // Entfernt alten EventListener
-    const new_show_answer_button = document.getElementById("show-answer-button");
+    // Entferne alte Event-Listener und füge einen neuen hinzu
+    const show_answer_button = document.getElementById("show-answer-button");
+    const cloned_button = show_answer_button.cloneNode(true);
+    show_answer_button.parentNode.replaceChild(cloned_button, show_answer_button);
 
-    new_show_answer_button.addEventListener("click", async function () {
+    cloned_button.addEventListener("click", async function () {
+        // Hole die vorherige und folgende Ayah
         const previous_ayah = await get_previous_ayah(surah_number, ayah_number);
         const following_ayah = await get_following_ayah(surah_number, ayah_number);
+        const previous_ayah_english = await get_ayah_english_previous(surah_number, ayah_number);
+        const following_ayah_english = await get_ayah_english_following(surah_number, ayah_number);
 
+        // Fülle die entsprechenden Felder
         document.getElementById("previous-ayah").innerText = previous_ayah;
         document.getElementById("following-ayah").innerText = following_ayah;
-        document.getElementById("ayah-english-previous").innerText = await get_ayah_english_previous(surah_number, ayah_number);
-        document.getElementById("ayah-english-following").innerText = await get_ayah_english_following(surah_number, ayah_number);
+        document.getElementById("ayah-english-previous").innerText = previous_ayah_english;
+        document.getElementById("ayah-english-following").innerText = following_ayah_english;
     });
-
-    show_answer_button.style.display = "block";
-
-    show_answer_button.style.display = "block";
 });

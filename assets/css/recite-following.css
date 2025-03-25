@@ -28,10 +28,6 @@
     margin-bottom: 10px;
 }
 
-#show-answer-button{
-    display: none;
-}
-
 /* Mehr-Tools Liste */
 #more-tools {
     display: flex;
