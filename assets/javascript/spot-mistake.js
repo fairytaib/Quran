@@ -13,10 +13,13 @@ const surah_dropdown = document.getElementById("surah-dropdown");
 
 const start_button = document.getElementById("generate-button");
 
-let correct_answer = []
-let incorrect_answer = []
+// Standardmäßig den Button deaktivieren
+start_button.disabled = true;
 
-function get_surah(){
+let correct_answer = [];
+let incorrect_answer = [];
+
+function get_surah() {
     return document.getElementById("surah-dropdown").value;
 }
 
@@ -24,7 +27,7 @@ async function get_all_surahs(surah_number) {
     try {
         const response = await fetch(quran_api + `surah.json`);
         const surah = await response.json();
-        return surah;  // Ensure the API response has this property
+        return surah; // Ensure the API response has this property
     } catch (error) {
         console.error("Error fetching surahs:", error);
         return "Error fetching data";
@@ -35,7 +38,7 @@ async function get_ayah_amount(surah_number) {
     try {
         const response = await fetch(quran_api + `${surah_number}.json`);
         const surah = await response.json();
-        return surah.totalAyah;  // Ensure the API response has this property
+        return surah.totalAyah; // Ensure the API response has this property
     } catch (error) {
         console.error("Error fetching ayah amount:", error);
         return 1; // Default to 1 if an error occurs
@@ -63,6 +66,17 @@ async function populateDropdown() {
         dropdown.appendChild(option);
     });
 }
+
+// Aktiviert den Button, wenn eine Surah ausgewählt wurde
+surah_dropdown.addEventListener("change", function () {
+    const surah_number = get_surah();
+
+    if (surah_number) {
+        start_button.disabled = false; // Aktivieren, wenn eine Surah ausgewählt wurde
+    } else {
+        start_button.disabled = true; // Deaktivieren, wenn keine Surah ausgewählt wurde
+    }
+});
 
 async function get_correct_ayah() {
     const surah = document.getElementById("surah-dropdown").value;
@@ -175,8 +189,6 @@ function display_text() {
         container_two.onclick = () => check_answer(true, container_two); // Container Two ist korrekt
     }
 }
-
-
 
 document.addEventListener("DOMContentLoaded", populateDropdown);
 
