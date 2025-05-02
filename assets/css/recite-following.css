@@ -1,7 +1,7 @@
-/* Grundlegende Stile für die gesamte Seite */
+/* === Seitenlayout & Grundstil === */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e0f2f1;
     color: #333;
     margin: 0;
     padding: 0;
@@ -12,60 +12,149 @@ body {
     min-height: 100vh;
 }
 
+/* === Ayah-Container === */
 #ayah-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-width: 90%;
-    min-height: 200px;
-    border: 1px solid black;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #ebebeb;
+    width: 90%;
+    max-width: 700px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    gap: 16px;
 }
 
-/* Ayah-Anzeige */
-#ayah-arabic, #previous-ayah, #following-ayah {
+/* === Arabischer Text === */
+#ayah-arabic,
+#previous-ayah,
+#following-ayah {
     font-size: 2em;
-    font-weight: bold;
-    color: #000;
-    margin: 20px 0 5px;
+    font-weight: 600;
+    color: #004d40;
+    margin: 10px 0;
     direction: rtl;
+    text-align: right;
+    line-height: 1.6;
 }
 
-#ayah-english, #ayah-english-previous, #ayah-english-following {
+/* === Englischer Text === */
+#ayah-english,
+#ayah-english-previous,
+#ayah-english-following {
     font-size: 1em;
-    color: #2c2c2c;
+    color: #444;
+    text-align: left;
     margin-bottom: 10px;
+    line-height: 1.4;
 }
 
-#show-answer-button{
-    display: none;
+/* === Einstellungen === */
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+#settings-container {
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-/* Mehr-Tools Liste */
+label {
+    font-weight: 500;
+    font-size: 1em;
+    display: block;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+select {
+    width: 250px;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    transition: border 0.3s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: #00796b;
+}
+
+input[type="number"] {
+    width: 60px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin: 0 4px;
+    text-align: center;
+}
+
+/* === Buttons === */
+button {
+    background: #00796b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: #004d40;
+    transform: translateY(-2px);
+}
+
+/* === Mehr-Tools Liste === */
 #more-tools {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     list-style: none;
     padding: 0;
+    margin: 20px 0;
 }
 
 #more-tools li {
-    background: #007bff;
-    padding: 8px 12px;
-    border-radius: 5px;
+    background: #00796b;
+    padding: 10px 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+#more-tools li:hover {
+    background: #004d40;
 }
 
 #more-tools li a {
     color: white;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
 }
 
-#more-tools li:hover {
-    background: #0056b3;
+/* === Responsive Design === */
+@media (max-width: 600px) {
+    #ayah-container {
+        width: 95%;
+        padding: 16px;
+    }
+
+    select {
+        width: 100%;
+    }
+
+    #more-tools {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
 }

@@ -1,191 +1,128 @@
-const quran_api = "https://quranapi.pages.dev/api/";
+const API_BASE = "https://quranapi.pages.dev/api/";
 
-const container_one = document.getElementById("container-one");
-const container_two = document.getElementById("container-two");
+const el = {
+    containerOne: document.getElementById("container-one"),
+    containerTwo: document.getElementById("container-two"),
+    ayahOneA: document.getElementById("container-one-ayah-one"),
+    ayahOneB: document.getElementById("container-one-ayah-two"),
+    ayahTwoA: document.getElementById("container-two-ayah-one"),
+    ayahTwoB: document.getElementById("container-two-ayah-two"),
+    surahDropdown: document.getElementById("surah-dropdown"),
+    startButton: document.getElementById("generate-button"),
+};
 
-const container_one_ayah_one = document.getElementById("container-one-ayah-one");
-const container_one_ayah_two = document.getElementById("container-one-ayah-two");
+let correctPair = [];
+let incorrectPair = [];
 
-const container_two_ayah_one = document.getElementById("container-two-ayah-one");
-const container_two_ayah_two = document.getElementById("container-two-ayah-two");
+// ------------------ API ------------------
 
-const surah_dropdown = document.getElementById("surah-dropdown");
-
-const start_button = document.getElementById("generate-button");
-
-let correct_answer = []
-let incorrect_answer = []
-
-function get_surah(){
-    return document.getElementById("surah-dropdown").value;
-}
-
-async function get_all_surahs(surah_number) {
+const fetchJSON = async (path) => {
     try {
-        const response = await fetch(quran_api + `surah.json`);
-        const surah = await response.json();
-        return surah;  // Ensure the API response has this property
+        const res = await fetch(API_BASE + path);
+        return await res.json();
     } catch (error) {
-        console.error("Error fetching surahs:", error);
-        return "Error fetching data";
+        console.error("Fetch error:", error);
+        return null;
     }
-}
+};
 
-async function get_ayah_amount(surah_number) {
-    try {
-        const response = await fetch(quran_api + `${surah_number}.json`);
-        const surah = await response.json();
-        return surah.totalAyah;  // Ensure the API response has this property
-    } catch (error) {
-        console.error("Error fetching ayah amount:", error);
-        return 1; // Default to 1 if an error occurs
-    }
-}
+const fetchAllSurahs = () => fetchJSON("surah.json");
 
-async function populateDropdown() {
-    const dropdown = document.getElementById("surah-dropdown");
-    const surahs = await get_all_surahs();
+const fetchSurahMeta = (surah) => fetchJSON(`${surah}.json`);
 
-    // Vorherige Inhalte entfernen
-    dropdown.innerHTML = "";
+const fetchAyah = (surah, ayah) => fetchJSON(`${surah}/${ayah}.json`);
 
-    // Platzhalteroption hinzufügen
-    const defaultOption = document.createElement("option");
-    defaultOption.text = "Choose a Surah";
-    defaultOption.value = "";
-    dropdown.appendChild(defaultOption);
+// ------------------ Helpers ------------------
 
-    // Surahs in das Dropdown einfügen
-    surahs.forEach((surah, index) => {
-        const option = document.createElement("option");
-        option.value = index + 1; // Suren-Nummer als Wert
-        option.text = `${index + 1}. ${surah.surahName} (${surah.surahNameArabic}) - ${surah.surahNameTranslation}`;
-        dropdown.appendChild(option);
+const getSurah = () => el.surahDropdown.value;
+
+const resetContainers = () => {
+    [el.containerOne, el.containerTwo].forEach(container => {
+        container.style.backgroundColor = "";
+        container.classList.remove("correct", "incorrect");
+        container.onclick = null;
     });
-}
+};
 
-async function get_correct_ayah() {
-    const surah = document.getElementById("surah-dropdown").value;
-    const ayahAmount = await get_ayah_amount(surah);
-    let random_ayah = Math.floor(Math.random() * ayahAmount) + 1;
+const highlightResult = (container, isCorrect) => {
+    container.style.backgroundColor = isCorrect ? "#4caf50" : "#f44336";
+};
 
-    if (random_ayah > ayahAmount - 1) {
-        random_ayah -= 1
-    }
+// ------------------ Dropdown Setup ------------------
 
-    try {
-        const response1 = await fetch(quran_api + `${surah}/${random_ayah}.json`);
-        const data1 = await response1.json();
-        if (data1 && data1.arabic1) {
-            correct_answer.push(data1.arabic1);
-        } else {
-            console.error("Invalid data for correct ayah:", data1);
-        }
+const populateDropdown = async () => {
+    const surahs = await fetchAllSurahs();
+    if (!surahs) return;
 
-        if (random_ayah < ayahAmount) {
-            const response2 = await fetch(quran_api + `${surah}/${random_ayah + 1}.json`);
-            const data2 = await response2.json();
-            if (data2 && data2.arabic1) {
-                correct_answer.push(data2.arabic1);
-            } else {
-                console.error("Invalid data for correct ayah (second):", data2);
-            }
-        }
-    } catch (error) {
-        console.error("Error fetching correct ayah:", error);
-    }
-}
+    el.surahDropdown.innerHTML = "";
+    el.surahDropdown.appendChild(new Option("Choose a Surah", ""));
 
-async function get_wrong_ayah() {
-    const surah = document.getElementById("surah-dropdown").value;
-    const ayahAmount = await get_ayah_amount(surah);
-    const random_ayah = Math.floor(Math.random() * ayahAmount) + 1;
-    let random_ayah_two;
+    surahs.forEach((surah, i) => {
+        const label = `${i + 1}. ${surah.surahName} (${surah.surahNameArabic}) – ${surah.surahNameTranslation}`;
+        el.surahDropdown.appendChild(new Option(label, i + 1));
+    });
+};
 
+// ------------------ Generate Ayah Pairs ------------------
+
+const getCorrectPair = async (surah) => {
+    const max = await getAyahCount(surah);
+    let n = Math.floor(Math.random() * (max - 1)) + 1;
+
+    const ayah1 = await fetchAyah(surah, n);
+    const ayah2 = await fetchAyah(surah, n + 1);
+    return [ayah1 ?.arabic1, ayah2 ?.arabic1];
+};
+
+const getIncorrectPair = async (surah) => {
+    const max = await getAyahCount(surah);
+    let a = Math.floor(Math.random() * max) + 1;
+    let b;
     do {
-        random_ayah_two = Math.floor(Math.random() * ayahAmount) + 1;
-    } while (random_ayah_two === random_ayah);
+        b = Math.floor(Math.random() * max) + 1;
+    } while (a === b);
 
-    try {
-        const response1 = await fetch(quran_api + `${surah}/${random_ayah}.json`);
-        const data1 = await response1.json();
-        if (data1 && data1.arabic1) {
-            incorrect_answer.push(data1.arabic1);
-        } else {
-            console.error("Invalid data for wrong ayah:", data1);
-        }
+    const ayah1 = await fetchAyah(surah, a);
+    const ayah2 = await fetchAyah(surah, b);
+    return [ayah1 ?.arabic1, ayah2 ?.arabic1];
+};
 
-        const response2 = await fetch(quran_api + `${surah}/${random_ayah_two}.json`);
-        const data2 = await response2.json();
-        if (data2 && data2.arabic1) {
-            incorrect_answer.push(data2.arabic1);
-        } else {
-            console.error("Invalid data for wrong ayah (second):", data2);
-        }
-    } catch (error) {
-        console.error("Error fetching wrong ayah:", error);
-    }
-}
+const getAyahCount = async (surah) => {
+    const meta = await fetchSurahMeta(surah);
+    return meta ?.totalAyah || 1;
+};
 
-function check_answer(isCorrect, container) {
-    if (isCorrect) {
-        // Wenn die Antwort korrekt ist, färbe den gesamten Container grün
-        container.style.backgroundColor = "green";
+// ------------------ Display Logic ------------------
+
+const renderPairs = () => {
+    const correctFirst = Math.random() < 0.5;
+
+    if (correctFirst) {
+        el.ayahOneA.innerText = correctPair[0];
+        el.ayahOneB.innerText = correctPair[1];
+        el.ayahTwoA.innerText = incorrectPair[0];
+        el.ayahTwoB.innerText = incorrectPair[1];
+
+        el.containerOne.onclick = () => highlightResult(el.containerOne, true);
+        el.containerTwo.onclick = () => highlightResult(el.containerTwo, false);
     } else {
-        // Wenn die Antwort falsch ist, färbe den gesamten Container rot
-        container.style.backgroundColor = "red";
+        el.ayahOneA.innerText = incorrectPair[0];
+        el.ayahOneB.innerText = incorrectPair[1];
+        el.ayahTwoA.innerText = correctPair[0];
+        el.ayahTwoB.innerText = correctPair[1];
+
+        el.containerOne.onclick = () => highlightResult(el.containerOne, false);
+        el.containerTwo.onclick = () => highlightResult(el.containerTwo, true);
     }
-}
+};
 
-function reset() {
-    // Hintergrundfarben zurücksetzen
-    container_one.style.backgroundColor = "";
-    container_two.style.backgroundColor = "";
-
-    // Klassen zurücksetzen
-    container_one.classList.remove("correct", "incorrect");
-    container_two.classList.remove("correct", "incorrect");
-}
-
-
-function display_text() {
-    const isCorrectInContainerOne = Math.random() < 0.5;
-
-    if (isCorrectInContainerOne) {
-        container_one.classList.add("correct");
-        container_two.classList.add("incorrect");
-        container_one_ayah_one.innerHTML = correct_answer[0];
-        container_one_ayah_two.innerHTML = correct_answer[1];
-        container_two_ayah_one.innerHTML = incorrect_answer[0];
-        container_two_ayah_two.innerHTML = incorrect_answer[1];
-
-        // Füge Event-Listener für Klicks hinzu
-        container_one.onclick = () => check_answer(true, container_one); // Container One ist korrekt
-        container_two.onclick = () => check_answer(false, container_two); // Container Two ist falsch
-    } else {
-        container_one.classList.add("incorrect");
-        container_two.classList.add("correct");
-        container_one_ayah_one.innerHTML = incorrect_answer[0];
-        container_one_ayah_two.innerHTML = incorrect_answer[1];
-        container_two_ayah_one.innerHTML = correct_answer[0];
-        container_two_ayah_two.innerHTML = correct_answer[1];
-
-        // Füge Event-Listener für Klicks hinzu
-        container_one.onclick = () => check_answer(false, container_one); // Container One ist falsch
-        container_two.onclick = () => check_answer(true, container_two); // Container Two ist korrekt
-    }
-}
-
-
+// ------------------ Init ------------------
 
 document.addEventListener("DOMContentLoaded", populateDropdown);
 
-start_button.addEventListener("click", async function () {
-    correct_answer = []; // Schreibfehler korrigiert
-    incorrect_answer = []; // Schreibfehler korrigiert
-
-    reset();
-    await get_correct_ayah();
-    await get_wrong_ayah();
-    display_text();
+el.startButton.addEventListener("click", async () => {
+    resetContainers();
+    correctPair = await getCorrectPair(getSurah());
+    incorrectPair = await getIncorrectPair(getSurah());
+    renderPairs();
 });

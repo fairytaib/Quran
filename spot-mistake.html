@@ -1,43 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Quran</title>
+    <title>Learn Quran – Spot the Mistake</title>
+    <meta name="description" content="Übe das Erkennen falscher Fortsetzungen im Quran mit diesem Lernspiel.">
+    <meta name="author" content="Umravision">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/spot-mistake.css">
+    <link rel="icon" href="favicon.ico">
 </head>
+
 <body>
     <main>
-        <h1>Spot the wrong continuation</h1>
-        <div id="settings-container">
-            <label for="surah-dropdown">Choose a Surah:</label>
-            <select id="surah-dropdown">
+        <h1>Spot the right Continuation</h1>
+
+        <section id="settings-container" aria-labelledby="settings-heading">
+            <label for="surah-dropdown" id="settings-heading">Choose a Surah:</label>
+            <select id="surah-dropdown" name="surah">
                 <option value="">Lade Suren...</option>
             </select>
-        </div>
-        <div id="anwser-container">
-            <div id="container-one" class="container">
-                <p id="container-one-ayah-one"></p>
-                <p id="container-one-ayah-two"></p>
+        </section>
+
+        <section id="anwser-container" aria-label="Antwort-Auswahl">
+            <div id="container-one" class="container" role="region" aria-label="Option 1">
+                <p id="container-one-ayah-one" class="ayah-ar"></p>
+                <p id="container-one-ayah-two" class="ayah-ar"></p>
             </div>
-            <div id="container-two" class="container">
-                <p id="container-two-ayah-one"></p>
-                <p id="container-two-ayah-two"></p>
+            <div id="container-two" class="container" role="region" aria-label="Option 2">
+                <p id="container-two-ayah-one" class="ayah-ar"></p>
+                <p id="container-two-ayah-two" class="ayah-ar"></p>
             </div>
+        </section>
+
+        <div class="button-group">
+            <button id="generate-button" type="button">Get Random Ayahs</button>
         </div>
-        <button id="generate-button">Get Random Ayahs</button>
-        
-        
     </main>
+
     <footer>
         <h2>Other Tools</h2>
         <ul id="more-tools">
-            <li><a href="/index.html">Recite following</a></li>
-            <li><a href="">Follows soon</a></li>
-            <li><a href="">Follows soon</a></li>
+            <li><a href="/index.html">Recite Following</a></li>
+            <li><a href="#" class="disabled">Follows soon</a></li>
+            <li><a href="#" class="disabled">Follows soon</a></li>
         </ul>
     </footer>
+
     <script src="assets/javascript/spot-mistake.js"></script>
 </body>
+
 </html>

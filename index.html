@@ -4,41 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Quran</title>
+    <title>Learn Quran – Recite Following</title>
+    <meta name="description" content="Übe das Wiederholen und Erkennen vorheriger und nachfolgender Ayat aus dem Quran.">
+    <meta name="author" content="Umravision">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/recite-following.css">
+    <link rel="icon" href="favicon.ico">
 </head>
 
 <body>
     <main>
-        <h1>Recite the previous and the following Ayah</h1>
-        <div id="settings-container">
-            <label for="surah-dropdown">Choose a Surah:</label>
-            <select id="surah-dropdown">
+        <h1>Recite the Previous and Following Ayah</h1>
+
+        <section id="settings-container" aria-labelledby="settings-heading">
+            <label for="surah-dropdown" id="settings-heading">Choose a Surah:</label>
+            <select id="surah-dropdown" name="surah">
                 <option value="">Lade Suren...</option>
             </select>
-            <p>From: <input type="number" id="start-ayah" value="1"> to <input type="number" id="end-ayah" value="286"></p>
-        </div>
+            <p>
+                From:
+                <input type="number" id="start-ayah" name="start-ayah" value="1" min="1">
+                to
+                <input type="number" id="end-ayah" name="end-ayah" value="286" min="1">
+            </p>
+        </section>
 
-        <div id="ayah-container">
-            <p id="previous-ayah"></p>
-            <p id="ayah-arabic"></p>
-            <p id="following-ayah"></p>
+        <section id="ayah-container" aria-label="Ayah Anzeige">
+            <p id="previous-ayah" class="ayah-ar"></p>
+            <p id="ayah-arabic" class="ayah-ar"></p>
+            <p id="following-ayah" class="ayah-ar"></p>
             <p id="ayah-english-previous"></p>
             <p id="ayah-english"></p>
             <p id="ayah-english-following"></p>
+        </section>
+
+        <div class="button-group">
+            <button id="get-random-ayah-button" type="button" class="disabled">Get Random Ayah</button>
+            <button id="show-answer-button" type="button" class="disabled">Show Answer</button>
         </div>
-        <button id="get-random-ayah-button">Get random Ayah</button>
-        <button id="show-answer-button">Show Answer</button>
     </main>
+
     <footer>
         <h2>Other Tools</h2>
         <ul id="more-tools">
             <li><a href="/spot-mistake.html">Spot the Mistake</a></li>
-            <li><a href="">Follows soon</a></li>
-            <li><a href="">Follows soon</a></li>
+            <li><a href="#" class="disabled">Follows soon</a></li>
+            <li><a href="#" class="disabled">Follows soon</a></li>
         </ul>
     </footer>
+
     <script src="assets/javascript/recite-following.js"></script>
 </body>
 

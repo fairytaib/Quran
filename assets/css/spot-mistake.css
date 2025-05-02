@@ -1,7 +1,7 @@
-/* Grundlegende Stile für die gesamte Seite */
+/* === Grundlayout === */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e0f2f1;
     color: #333;
     margin: 0;
     padding: 0;
@@ -12,42 +12,153 @@ body {
     min-height: 100vh;
 }
 
-/* Einstellungen (Dropdown) */
+/* === Einstellungen === */
 #settings-container {
     width: 100%;
+    max-width: 540px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-#anwser-container{
+label {
+    font-weight: 500;
+    font-size: 1em;
+    display: block;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    transition: border 0.3s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: #00796b;
+}
+
+/* === Antwort-Container (2 Boxen nebeneinander) === */
+#anwser-container {
     width: 90%;
+    max-width: 800px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 10px;
+    align-items: stretch;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
-/* Ayah-Container */
+/* === Ayah-Container (einzelne Box) === */
 .container {
-    min-width: 50%;
-    min-height: 120px;
-    border: 1px solid black;
-    padding: 15px;
-    background-color: #ebebeb;
-    border-radius: 5px;
+    flex: 1;
+    min-width: 280px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-end;
+    gap: 12px;
 }
 
-/* Ayah-Anzeige */
+/* === Ayah-Text (Arabisch) === */
 .container p {
     font-size: 1.5em;
-    font-weight: bold;
-    color: #000;
+    font-weight: 600;
+    color: #004d40;
     margin: 5px 0;
-    direction: rtl; /* Arabischer Text richtig ausrichten */
+    direction: rtl;
+    text-align: right;
+    line-height: 1.6;
 }
 
+/* === Button === */
+button {
+    background: #00796b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    min-width: 240px;
+}
+
+button:hover {
+    background: #004d40;
+    transform: translateY(-2px);
+}
+
+/* === Footer-Bereich === */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background: #f0f0f0;
+    border-top: 1px solid #ddd;
+}
+
+footer h2 {
+    font-size: 1.2em;
+    margin-bottom: 14px;
+    color: #00796b;
+}
+
+/* === Mehr-Tools Liste === */
+#more-tools {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#more-tools li {
+    background: #00796b;
+    padding: 10px 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+#more-tools li:hover {
+    background: #004d40;
+}
+
+#more-tools li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* === Responsive Verhalten === */
+@media (max-width: 600px) {
+    #anwser-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    #more-tools {
+        flex-direction: column;
+    }
+}
